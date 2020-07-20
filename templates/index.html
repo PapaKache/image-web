@@ -25,7 +25,9 @@
             <form enctype="multipart/form-data" action="/upload" method="POST">
                 <div style="display: flex;">
                 {% csrf_token %}
-                <input type="file" name="upload" />
+                <a href="javascript:;" class="file">选择文件
+                <input type="file" name="upload" /></a>
+
                 <button id="sureUpload"> 确认上传</button>
                 </div>
             </form>
@@ -38,26 +40,29 @@
                     <option value="people">人物</option>
                     <option value="color">颜色</option>
                 </select>
-                <button id="sureUpload"> 刷新图片</button>
+                <form enctype="multipart/form-data" action="/upload_image" method="POST">
+                    {% csrf_token %}
+                    <button id="sureUpload" name="update_image"> 刷新图片</button>
+                </form>
                 </div>
 		<div>
 			<hr  color="#009988"/>
 		</div>
         <table  border="1px" width="96%">
             <tr  >             
-                <td  class="image_size"><div class="block"><{{ img|safe }}></div></td>
-                <td  class="image_size"><div class="block"><img id = "img2" src=  "/static/images/2.png" class="contain"/></div></td>
-                <td  class="image_size"><div class="block"><img id = "img3" src=  "/static/images/2.png" class="contain"/></div></td>
-                <td  class="image_size"><div class="block"><img id = "img4" src=  "/static/images/2.png" class="contain"/></div></td>
-                <td  class="image_size"><div class="block"><img id = "img5" src=  "/static/images/2.png" class="contain"/></div></td>
+                <td  class="image_size"><div class="block"><{{ img0|safe }}></div></td>
+                <td  class="image_size"><div class="block"><{{ img1|safe }}></div></td>
+                <td  class="image_size"><div class="block"><{{ img2|safe }}></div></td>
+                <td  class="image_size"><div class="block"><{{ img3|safe }}></div></td>
+                <td  class="image_size"><div class="block"><{{ img4|safe }}></div></td>
             </tr>
             
             <tr >             
-                <td  class="image_size"><div class="block"><img id = "img6" src=  "/static/images/2.png" class="contain"/></div></td>
-                <td  class="image_size"><div class="block"><img id = "img7" src= "/static/images/2.png"  class="contain"/></div></td>
-                <td  class="image_size"><div class="block"><img id = "img8" src= "/static/images/2.png"  class="contain"/></div></td>
-                <td  class="image_size"><div class="block"><img id = "img9" src= "/static/images/5.png"  class="contain"/></div></td>
-                <td  class="image_size"><div class="block"><img id = "img10" src= "/static/images/2.png" class="contain"/></div></td>
+                <td  class="image_size"><div class="block"><{{ img5|safe }}></div></td>
+                <td  class="image_size"><div class="block"><{{ img6|safe }}></div></td>
+                <td  class="image_size"><div class="block"><{{ img7|safe }}></div></td>
+                <td  class="image_size"><div class="block"><{{ img8|safe }}></div></td>
+                <td  class="image_size"><div class="block"><{{ img9|safe }}></div></td>
             </tr>
             
          

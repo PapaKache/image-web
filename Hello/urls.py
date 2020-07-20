@@ -13,5 +13,6 @@ urlpatterns = [
     #url(r'^search-post$', search.search_post),
     url(r'^upload$', entry.upload),
     url(r'^entry$', entry.main),
+    url(r'^upload_image$', entry.update_image),
     #path(r'^fuck$', search.fuck),
 ]
