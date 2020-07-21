@@ -7,14 +7,12 @@ from django.utils.safestring import mark_safe
 # 表单
    
 def main(request):
-    print('upload')
+    print('main')
     print(request)
-    print("1")
     if request.method == 'GET':
-        print("1.1")
         return render(request,'index.html')
     elif request.method == 'POST':
-        print("2")
+        print("post")
 
 def test(request):
     print('test')
@@ -30,18 +28,22 @@ def test(request):
 def upload(request):
     print('upload')
     print(request)
-    print("1")
     if request.method == 'GET':
-        print("1.1>>")
+        print("upload get")
         #return render(request,'upload.html')
     elif request.method == 'POST':
-        print("2")
+        print("upload post")
+       # b = request.POST['upload']
+       # print(b)
+
+       # a = request.POST['type_select']
+       # print(a
+        tselect= request.POST['type_select']
         content =request.FILES.get("upload", None)
-        print("3")
         if not content:
             return HttpResponse("没有上传内容")
         print('name:%s'%content.name)
-        position = os.path.join('/home/djiango/static/images/',content.name)
+        position = os.path.join('/home/djiango/static/images/'+tselect + '/',content.name)
         print(position)
 
         storage = open(position,'wb+')       #打开存储文件
@@ -55,7 +57,11 @@ def upload(request):
 def update_image(request):
     print('update image')
     print(request)
-    fs = get_files('/home/djiango/static/images')
+    tselect = request.POST['type_select']
+    #print(a)
+    idir = '/home/djiango/static/images/' + tselect
+    print(idir)
+    fs = get_files(idir)
     size = len(fs)
     if size <= 0:
         print('update image fail,get file:%d'%size)
@@ -66,9 +72,9 @@ def update_image(request):
     ht = {}
     for i in range(size):
         key = 'img%d'% i      
-        line = "<img id = 'img%d' src= '/static/images/%s'  class='contain'/>"%(i,fs[i])
+        line = "<img id = 'img%d' src= '/static/images/%s/%s'  class='contain'/>"%(i,tselect,fs[i])
         ht[key] = line
-    print(ht)
+    #print(ht)
     return render(request, "index.html", ht)
     
 def sort(vs):

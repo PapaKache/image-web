@@ -9,7 +9,6 @@
 
 </head>
 <body>
-		
 		<div style="height:60px;background:#6699cc" >
 			<img align="left" src= "/static/images/logo.jpg" />
 			<p align="right" > 登录/注册&nbsp;&nbsp;</p>		
@@ -21,32 +20,23 @@
 		</div>
 		<hr color="#009988" width= "100%"/>
 		
-        <div   height="30px">
-            <form enctype="multipart/form-data" action="/upload" method="POST">
-                <div style="display: flex;">
-                {% csrf_token %}
-                <a href="javascript:;" class="file">选择文件
-                <input type="file" name="upload" /></a>
-
-                <button id="sureUpload"> 确认上传</button>
-                </div>
-            </form>
-                
-        </div>
-           <div style="display: flex;">
-                <select  id = "image_type"  class="margin">        
-                    <option value="animal">动物</option>
-                    <option value="plant">植物</option>
-                    <option value="people">人物</option>
-                    <option value="color">颜色</option>
-                </select>
-                <form enctype="multipart/form-data" action="/upload_image" method="POST">
+        <div >
+                <form enctype="multipart/form-data" action="/update_image" method="POST">
+                    <div style="display: flex;" > 
                     {% csrf_token %}
-                    <button id="sureUpload" name="update_image"> 刷新图片</button>
+                    <select  name= 'type_select' id = "type_select"  class="margin" onchange="changeImageType()">        
+                        <option value="animal">动物</option>
+                        <option value="plant">植物</option>
+                        <option value="people">人物</option>
+                        <option value="color">颜色</option>
+                </select>
+                    <button id="sureUpload" name="update_image" > 刷新图片</button>
+                    </div>
                 </form>
                 </div>
 		<div>
-			<hr  color="#009988"/>
+
+ 			<hr  color="#009988"/>
 		</div>
         <table  border="1px" width="96%">
             <tr  >             
@@ -69,6 +59,38 @@
         
         </table>
 		<hr/>
+        
+        <div   height="30px" style="display: flex;">
+            <!--onsubmit="return false" -->
+            <form enctype="multipart/form-data" action="/upload" method="POST"  id = "form_upload" >
+                <div style="display: flex;">
+                {% csrf_token %}
+				<a>上传类别</a>
+				<select  name= 'type_select' id = "type_select_upload"  class="margin">        
+                        <option value="animal">动物</option>
+                        <option value="plant">植物</option>
+                        <option value="people">人物</option>
+                        <option value="color">颜色</option>
+                </select>
+
+                <a href="javascript:;" class="file">选择文件
+                <input type="file" name="upload" id = "upload"/></a>
+                <button id="sureUpload"  onclick = "on_click_upload()"> 确认上传</button>
+				
+                
+                </div>
+            </form> 
+			<div style="margin-left:80px">
+				<input />
+				<button >增加类别</button>
+			</div>
+			
+            <div style="margin-left:80px">
+				<button >上一页</button>
+				<button >下一页</button>
+			</div>
+        </div>
+
 		
 		<div >
 		<p>免责声明：本站所有内容来源于互联网。如果本站部分内容侵犯您的权益，请您告知，站长会立即处理。<a href="http://www.miitbeian.gov.cn/" rel="nofollow">ICP备</a></p>
@@ -97,6 +119,7 @@
 	{
 		var keys=["img1","img2","img3","img4","img5","img6","img7","img8","img9","img10"]
 		var id = document.getElementById("image_type");
+        alert('changeImageType:' + id)
 		var value = id.value;
 		var key;
 		for(var idx = 0;idx < 10;idx++)
@@ -120,6 +143,70 @@
 		
 	}
 	
+    function on_click_upload() {
+        /*
+        //alert('on_click_upload')
+        var type_select=document.getElementById("type_select")
+        alert('on_click_upload,type_select:' + type_select)
+        var upload_value=document.getElementById('upload')
+        alert('on_click_upload,upload_value:' + upload_value)
+        var f=document.createElement('form');
+        f.style.display='none';
+        f.action='/upload';
+        f.method='post';
+        //f.target='_blank';  //在新窗口打开
+        //var str='<td><input type="hidden" name="n_w_name" value="'+n_w_name+'"/></td>';
+        //    str+='<td><input type="hidden" name="n_w_cassize" value="'+n_w_cassize+'"/></td>';
+        var str = " <input type='file' name='upload' value=''+ upload_value + ' />' "
+            str += " <select  name= 'type_select' id = 'image_type'  class='margin' value=''+type_select + ' />'  "        
+
+        var token = $('meta[name="csrf-token"]').attr('content');
+        var csrfField = document.createElement("input");
+        csrfField.setAttribute("type", "hidden");
+        csrfField.setAttribute("name", "_csrf");
+        csrfField.setAttribute("value", token);
+ 
+
+        f.appendChild(csrfField);
+        //f.innerHTML=str;
+        document.body.appendChild(f);
+        f.submit();
+        alert('on_click_upload finish')
+        */
+        alert("gan");
+        
+        var type_select=document.getElementById("type_select");
+        //alert(type_select)
+        var upload=document.getElementById('upload');
+        //alert(upload)
+        data ={'type_select':type_select.value,'upload':upload.value};
+       
+        //var form = new FormData(upload);
+        //alert(form);
+        postdata = {csrfmiddlewaretoken: '{{ csrf_token }}', 'type_select':type_select.value, 'upload':upload.value};
+        dd= new FormData($("#form_upload")[0]);
+        alert(dd)
+        $.ajax({
+                //var type_select= $('type_select')
+                //alert(type_select)
+                //var upload=  $('upload')
+                //alert(upload)
+                type: "POST",
+                dataType: "json",//预期服务器返回的数据类型
+                url: "/upload" ,
+                data:  dd,
+                success: function (result) {
+                    console.log(result);//打印服务端返回的数据(调试用)
+                    if (result.resultCode == 200) {
+                        alert("SUCCESS");
+                    }
+                    ;
+                },
+                error : function() {
+                    alert("异常！");
+                }
+            });
+}
 </script>
 
 <script src="/static/js/jquery-3.4.1.min.js"></script>
