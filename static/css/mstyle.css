@@ -1,4 +1,50 @@
-#commonButton {
+/* 确认上传按钮 */
+.sureUpload {
+  margin: 6px;
+  height: 38px;
+  padding: 0 20px;
+  display: block;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+  background-color: rgba(76, 175, 80, .9);
+  border: none;
+}
+.inputBlock {
+  margin: 6px;
+  height: 38px;
+  padding: 0 20px;
+  display: block;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+  background-color: rgba(160, 160, 225, .5);
+  border: none;
+}
+
+.nextLeft {
+  margin: 6px;
+  height: 38px;
+  padding: 0 20px;
+  display: block;
+  color: #fff;
+  cursor: pointer;
+  background-color: rgba(00, 175, 80, .9);
+  border: none;
+}
+
+.nextRight {
+  margin: 6px;
+  height: 38px;
+  padding: 0 20px;
+  display: block;
+  color: #fff;
+  cursor: pointer;
+  background-color: rgba(00, 175, 80, .9);
+  border: none;
+}
+
+.commonButton {
   margin: 6px;
   height: 38px;
   padding: 0 20px;
@@ -30,7 +76,7 @@
     background: #6666FF;
     border: 1px solid #99D3F5;
     border-radius: 4px;
-    padding: 0px 16px;
+    padding: 0px 32px;
     overflow: hidden;
     color: #FFFFFF;
     text-decoration: none;
@@ -41,7 +87,7 @@
 .file input {
     position: absolute;
     right: 0;
-    top: 16px;
+    top: 0;
     opacity: 0;
 }
 
@@ -150,18 +196,7 @@ li {
   float: left;
 }
 
-/* 确认上传按钮 */
-#sureUpload {
-  margin: 6px;
-  height: 38px;
-  padding: 0 20px;
-  display: block;
-  color: #fff;
-  text-align: center;
-  cursor: pointer;
-  background-color: rgba(76, 175, 80, .9);
-  border: none;
-}
+
 #commonButton {
   margin: 6px;
   height: 38px;

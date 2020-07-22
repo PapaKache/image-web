@@ -4,8 +4,11 @@ from django.http import HttpResponse
 from django.shortcuts import render
 import os
 from django.utils.safestring import mark_safe
+import json
 # 表单
-   
+def response(data):
+    return HttpResponse(json.dumps(data))
+
 def main(request):
     print('main')
     print(request)
@@ -33,14 +36,13 @@ def upload(request):
         #return render(request,'upload.html')
     elif request.method == 'POST':
         print("upload post")
-       # b = request.POST['upload']
-       # print(b)
+        tselect= request.POST.get('type_select')
+        print(tselect)
+        
 
-       # a = request.POST['type_select']
-       # print(a
-        tselect= request.POST['type_select']
         content =request.FILES.get("upload", None)
         if not content:
+            print('not upload value')
             return HttpResponse("没有上传内容")
         print('name:%s'%content.name)
         position = os.path.join('/home/djiango/static/images/'+tselect + '/',content.name)
@@ -50,9 +52,9 @@ def upload(request):
         for chunk in content.chunks():       #分块写入文件
             storage.write(chunk)
         storage.close()                      #写入完成后关闭文件
-        return HttpResponse("上传成功")      #返回客户端信息
+        return response("上传成功")      #返回客户端信息
     else:
-        return HttpResponseRedirect("不支持的请求方法")
+        return response("不支持的请求方法")
 
 def update_image(request):
     print('update image')
