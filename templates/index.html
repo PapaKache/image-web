@@ -34,7 +34,7 @@
 					<input type="file" name="upload" id = "upload" class="inputBlock"/>
 				
                     <button class="sureUpload"  onclick = "on_click_upload()"> 确认上传</button>
-					<button class="sureUpload" name="update_image" > 刷新图片</button>
+					<button class="sureUpload" name="update_image" onclick="on_click_update_image() "> 刷新图片</button>
 
                     </div>
                 </form>
@@ -48,25 +48,31 @@
 		
         <table  border="1px" width="96%">
             <tr  >             
-                <td  class="image_size"><div class="block"><{{ img0|safe }}></div></td>
-                <td  class="image_size"><div class="block"><{{ img1|safe }}></div></td>
-                <td  class="image_size"><div class="block"><{{ img2|safe }}></div></td>
-                <td  class="image_size"><div class="block"><{{ img3|safe }}></div></td>
-                <td  class="image_size"><div class="block"><{{ img4|safe }}></div></td>
+                <td  class="image_size"><div class="block"><img id = "img1" src=  "/static/images/2.png" class="contain"/></div></td>
+                <td  class="image_size"><div class="block"><img id = "img2" src=  "/static/images/2.png" class="contain"/></div></td>
+                <td  class="image_size"><div class="block"><img id = "img3" src=  "/static/images/2.png" class="contain"/></div></td>
+                <td  class="image_size"><div class="block"><img id = "img4" src=  "/static/images/2.png" class="contain"/></div></td>
+                <td  class="image_size"><div class="block"><img id = "img5" src=  "/static/images/2.png" class="contain"/></div></td>
             </tr>
             
             <tr >             
-                <td  class="image_size"><div class="block"><{{ img5|safe }}></div></td>
-                <td  class="image_size"><div class="block"><{{ img6|safe }}></div></td>
-                <td  class="image_size"><div class="block"><{{ img7|safe }}></div></td>
-                <td  class="image_size"><div class="block"><{{ img8|safe }}></div></td>
-                <td  class="image_size"><div class="block"><{{ img9|safe }}></div></td>
+                <td  class="image_size"><div class="block"><img id = "img6" src=  "/static/images/2.png" class="contain"/></div></td>
+                <td  class="image_size"><div class="block"><img id = "img7" src=  "/static/images/2.png" class="contain"/></div></td>
+                <td  class="image_size"><div class="block"><img id = "img8" src=  "/static/images/2.png" class="contain"/></div></td>
+                <td  class="image_size"><div class="block"><img id = "img9" src=  "/static/images/2.png" class="contain"/></div></td>
+                <td  class="image_size"><div class="block"><img id = "img10" src=  "/static/images/2.png" class="contain"/></div></td>
             </tr>
         </table>
 		<hr>
         <div style="display:flex;justify-content: flex-end;">        
-            <button class="nextLeft" >上一页</button>
-            <button class="nextRight" >下一页</button>
+            <form enctype="multipart/form-data" action="/update_pre"   method="POST" > 
+                <button class="nextLeft" >上一页</button>
+            </form>
+            <{{ page_no|safe }}>
+            <form enctype="multipart/form-data" action="/update_next"   method="POST" > 
+                <button class="nextLeft" >下一页</button>
+            </form>
+
         </div>
         <div>
         <hr>
@@ -92,7 +98,8 @@
 	</tr>
 </table>
 -->
-
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<!-- function-->
 <script type="text/javascript">
 	function changeImageType()
 	{
@@ -147,10 +154,58 @@
                 success: function (result) {alert("SUCCESS");},
                 error : function( XMLHttpRequest, textStatus, errorThrown) {alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);},
             });
+       }
 
-}
+    function __update_image(data){
+            for(var key in data){ 
+                    value = data[key];
+			        var item = document.getElementById(key);
+                    item.src = value
+            }
+    }
+
+    function on_click_update_image() {
+        var formData = new FormData();
+        var type = document.getElementById("type_select")
+        formData.append('type_select', type.value)
+
+        var csrftoken = $("input[name$='csrfmiddlewaretoken']").val();
+      
+        $.ajax({
+
+                type: "POST",
+                dataType: "json",//预期服务器返回的数据类型
+                url: "/update_image" ,
+                processData : false,
+                data:  formData,
+                contentType:false,
+                headers:{'X-CSRFToken':csrftoken },
+                success: function (data) {
+                       //jdata = JSON.stringify(data);
+                       console.log(data);
+                       console.log('foreach');
+                       
+                     for(var key in data){ 
+                       console.log(key); 
+                       value = data[key]
+                       console.log(value)
+                     }
+                     __update_image(data);
+                    //console.log(result);
+                    alert("SUCCESS");
+                },
+                error : function( XMLHttpRequest, textStatus, errorThrown) {
+                    //var s = {{ img0|safe }};
+                    alert('err');
+                                console.log(textStatus); 
+
+                },
+            });
+    }
+    <!-- init-->
+    on_click_update_image();
+    alert('init f');
+
 </script>
-
-<script src="/static/js/jquery-3.4.1.min.js"></script>
 </body>
 </html>

@@ -5,9 +5,11 @@ from django.shortcuts import render
 import os
 from django.utils.safestring import mark_safe
 import json
+from django.http import JsonResponse
 # 表单
 def response(data):
-    return HttpResponse(json.dumps(data))
+    return JsonResponse(data)
+    #return HttpResponse(json.dumps(data))
 
 def main(request):
     print('main')
@@ -56,10 +58,14 @@ def upload(request):
     else:
         return response("不支持的请求方法")
 
-def update_image(request):
+
+def update_image(request, user = True):
     print('update image')
     print(request)
-    tselect = request.POST['type_select']
+    if user == True: 
+        tselect = request.POST['type_select']
+    else:
+        tselect = 'animal'
     #print(a)
     idir = '/home/djiango/static/images/' + tselect
     print(idir)
@@ -71,6 +77,18 @@ def update_image(request):
         
     if size >= 10:
         size = 10
+
+    dt = {}
+    for i in range(size):
+        key = 'img%d'% (i + 1)      
+        src= "/static/images/%s/%s"%(tselect,fs[i])
+        dt[key] = src
+
+    print(dt)
+    #return HttpResponse(json.dumps(dt), content_type='application/json')
+    #return render(request, "index.html", dt)
+    return response(dt)
+    '''
     ht = {}
     for i in range(size):
         key = 'img%d'% i      
@@ -78,7 +96,8 @@ def update_image(request):
         ht[key] = line
     #print(ht)
     return render(request, "index.html", ht)
-    
+    '''
+
 def sort(vs):
     NAME = 0
     TIME = 1

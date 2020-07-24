@@ -11,6 +11,8 @@ urlpatterns = [
     #path('runoob/', views.runoob),
     #path('sfss/', search.search_form),
     #url(r'^search-post$', search.search_post),
+    #url(r'^update_next$', entry.update_next),
+    #url(r'^update_pre$', entry.update_pre),
     url(r'^upload$', entry.upload),
     url(r'^entry$', entry.main),
     url(r'^update_image$', entry.update_image),
