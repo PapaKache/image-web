@@ -65,14 +65,9 @@
         </table>
 		<hr>
         <div style="display:flex;justify-content: flex-end;">        
-            <form enctype="multipart/form-data" action="/update_pre"   method="POST" > 
-                <button class="nextLeft" >上一页</button>
-            </form>
-            <input id = "page_no"/>
-            <form enctype="multipart/form-data" action="/update_next"   method="POST" > 
-                <button class="nextLeft" >下一页</button>
-            </form>
-
+                <button class="nextLeft" onclick="on_click_update_image_pre() ">上一页</button>
+                <input id = "page_no" width="32px" value="1"/>
+                <button class="nextLeft" onclick="on_click_update_image_next() ">下一页</button>
         </div>
         <div>
         <hr>
@@ -176,10 +171,32 @@
             }
     }
 
+    function on_click_update_image_next() {
+        var page_no = document.getElementById("page_no");
+        value = page_no.value;
+        value = value *1 + 1;
+        page_no.value = value;
+        on_click_update_image();
+    }
+
+    function on_click_update_image_pre() {
+        var page_no = document.getElementById("page_no");
+        value = page_no.value;
+        if (value > 1)
+        {
+            value = value * 1 -1;
+        }
+        page_no.value = value;
+        on_click_update_image();
+    }
+
+
     function on_click_update_image() {
         var formData = new FormData();
-        var type = document.getElementById("type_select")
-        formData.append('type_select', type.value)
+        var type = document.getElementById("type_select");
+        var page_no = document.getElementById("page_no");
+        formData.append('type_select', type.value);
+        formData.append('page_no', page_no.value);
 
         var csrftoken = $("input[name$='csrfmiddlewaretoken']").val();
       

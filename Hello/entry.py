@@ -64,6 +64,8 @@ def update_image(request, user = True):
     print(request)
     if user == True: 
         tselect = request.POST['type_select']
+        page_num = request.POST['page_no']
+        print('pageno:' + page_num)
     else:
         tselect = 'animal'
     #print(a)
