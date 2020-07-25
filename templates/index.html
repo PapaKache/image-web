@@ -6,24 +6,15 @@
 <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
 
 <link rel="stylesheet" type="text/css" href="/static/css/mstyle.css">
-<!--<link rel="stylesheet" type="text/css" href="D:\workspace\web\djiango\static\css\mstyle.css"> -->
-
 </head>
-<body>
-		<div style="height:60px;background:#6699cc" >
-			<img align="left" src= "/static/images/logo.jpg" />
-            <!--
-			<a align="right" href="47.94.236.114:8001/login.xml"> 登录/注册</a>		
-            -->
+<!--<body style="background-image:url(/static/images/bg.jpg);background-size:100%;">-->
+<body style="background:#FAF0F0;background-size:100%;">
+		<div style="height:128px;background:#FDF5F5" >
+			<img align="left" src= "/static/images/logo.png" />
 			<a align="right" href="login"> 登录/注册</a>		
 		</div>	
 		<hr color="#009988"/>
-		
-		<div style="width:100%;height:60px;background:#66FFcc" >
-			
-		</div>
 		<hr color="#009988" width= "100%"/>
-		
                 <form enctype="multipart/form-data" action="/upload" id = "form_upload"  method="POST" onsubmit="return false"> 
                 <div style="display: flex;">
                     {% csrf_token %}
