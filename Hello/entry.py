@@ -6,6 +6,7 @@ import os
 from django.utils.safestring import mark_safe
 import json
 from django.http import JsonResponse
+from . import user_info
 # 表单
 def response(data):
     return JsonResponse(data)
@@ -58,7 +59,51 @@ def upload(request):
     else:
         return response("不支持的请求方法")
 
+def login(request):
+    print('login')
+    if request.method == 'GET':
+        return render(request,'login.html')
+    else:
+        print('login post')
+        print(request)
+        user = request.POST['user']
+        pwd = request.POST['pwd']
+        (r,u) = user_info.getUserInfo(user)
+        if r == True:
+            if u.pwd == pwd:
+                rc = user_info.USER_LOGIN_SUCC
+            else:
+                rc = user_info.USER_LOGIN_FAIL
+        else:
+            rc = user_info.USER_LOGIN_NO_USER
 
+        print(user)
+        print(rc) 
+        ht = {'user':user,'result':rc}
+    return response(ht)
+
+def register(request):
+    print('register')
+    if request.method == 'GET':
+        return render(request,'login.html')
+    else:
+        print('register post')
+        print(request)
+        user = request.POST['user']
+        pwd = request.POST['pwd']
+        label = request.POST['label']
+        (r,u) = user_info.getUserInfo(user)
+        if r == True:
+            rc = user_info.USER_REGISTER_EXISTS
+        else:
+            u = user_info.createUserInfo(user,pwd,label)
+            user_info.saveUserInfo(u)
+            rc = user_info.USER_REGISTER_SUCC
+
+        print(user)
+        print(rc) 
+        ht = {'user':user,'result':rc}
+    return response(ht)
 def update_image(request, user = True):
     print('update image')
     print(request)
@@ -66,6 +111,7 @@ def update_image(request, user = True):
         tselect = request.POST['type_select']
         page_num = request.POST['page_no']
         print('pageno:' + page_num)
+        page_num = int(page_num)
     else:
         tselect = 'animal'
     #print(a)
@@ -77,15 +123,22 @@ def update_image(request, user = True):
         print('update image fail,get file:%d'%size)
         return render(request, "index.html", {})
         
-    if size >= 10:
-        size = 10
+    if size <= 10:
+        start_index = 0
+        end_index = (size -1)- start_index
+    else:
+        start_index = (page_num - 1) * 10
+        end_index = (size - 1)
+        if end_index - start_index > 9:
+            end_index = start_index + 9
 
     dt = {}
-    for i in range(size):
-        key = 'img%d'% (i + 1)      
+    imgid = 1
+    for i in range(start_index,end_index + 1, 1):
+        key = 'img%d'% (imgid)      
         src= "/static/images/%s/%s"%(tselect,fs[i])
         dt[key] = src
-
+        imgid += 1
     print(dt)
     #return HttpResponse(json.dumps(dt), content_type='application/json')
     #return render(request, "index.html", dt)
@@ -137,5 +190,5 @@ def get_files(file_dir):
         
     return rs
     
-fs = get_files(".")
-print(fs)
+#fs = get_files(".")
+#print(fs)

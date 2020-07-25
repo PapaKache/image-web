@@ -12,7 +12,10 @@
 <body>
 		<div style="height:60px;background:#6699cc" >
 			<img align="left" src= "/static/images/logo.jpg" />
-			<p align="right" > 登录/注册&nbsp;&nbsp;</p>		
+            <!--
+			<a align="right" href="47.94.236.114:8001/login.xml"> 登录/注册</a>		
+            -->
+			<a align="right" href="login"> 登录/注册</a>		
 		</div>	
 		<hr color="#009988"/>
 		
@@ -146,7 +149,7 @@
                 data:  formData,
                 contentType:false,
                 headers:{'X-CSRFToken':csrftoken },
-                success: function (result) {alert("SUCCESS");},
+                success: function (result) {},
                 error : function( XMLHttpRequest, textStatus, errorThrown) {alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);},
             });
        }
@@ -221,7 +224,6 @@
                      }
                      __update_image(data);
                     //console.log(result);
-                    alert("SUCCESS");
                 },
                 error : function( XMLHttpRequest, textStatus, errorThrown) {
                     //var s = {{ img0|safe }};
@@ -233,7 +235,6 @@
     }
     <!-- init-->
     on_click_update_image();
-    alert('init f');
 
 </script>
 </body>

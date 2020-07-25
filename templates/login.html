@@ -5,30 +5,156 @@
 <title>登录/注册</title>
 
 <style type="text/css">
-	body {background-image:url(images/bg.jpg);}
+	body {background-image:url(/static/images/bg.jpg);}
 </style>
 </head>
 <body >
 	
+{% csrf_token %}
 <div style="margin-left:34%;margin-right:34%;margin-top:10%;background-color:rgba(255,255,255,0.5);border-radius:10px">
-	<div style="margin-left:10%;margin-top:5%;">
+    <div style="margin-left:10%;margin-top:5%;">
 		<div >
-			<input placeholder="用户名称" >6个以上字符</input>
+			<input placeholder="用户名称" id = "user">6-20字符,不限制字符</input>
 		</div>
 	<hr />
 
 		<div>
-			<input placeholder="密码">6个以上字符</input>
+			<input placeholder="密码" id = "pwd">3-12个字符,不限制字符</input>
 		</div>
 	<hr />
-		<div>
-			<input placeholder="昵称">不能为空字符</input>
+		<div id= 'label_div'>
+			<input placeholder="昵称" id = "label">2-20个字符,不限制字符</input>
 		</div>
 	<hr />
-		<button style="margin-left:6%;border-radius:10px">登录</button>
-		<button style="margin-left:6%;border-radius:10px">注册</button>
+		<button style="margin-left:6%;border-radius:10px" id = "login" onclick ="click_login()">登录</button>
+		<button style="margin-left:6%;border-radius:10px" id = "register" onclick ="click_register()">注册</button>
+		<button style="margin-left:6%;border-radius:10px" id = "want_register" onclick ="click_want_register()">我要注册</button>
+        <p id = "info">输入账号密码后登录</p>
 		
 	</div>
 </div>
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+    function click_want_register() {
+        var item = document.getElementById('want_register');
+        item.style.visibility="hidden";
+        var item = document.getElementById('login');
+        item.style.visibility="hidden";
+
+        var item = document.getElementById('label_div');
+        item.style.visibility="visible";
+        var item = document.getElementById('register');
+        item.style.visibility="visible";
+
+    }
+
+    function click_register() {
+        var user = document.getElementById('user');
+        var pwd = document.getElementById('pwd');
+        var label  = document.getElementById('label');
+        var info = document.getElementById('info');
+        len = user.value.length;
+        info.style.color="red";
+        if (len < 6 || len > 20)
+        {
+            info.innerText  = '无效用户:'+ user.value + ' 长度:' + len;
+            return;
+        }
+        len = pwd.value.length;
+        if (len < 3 || len > 12)
+        {
+            info.innerText  = '无效密码  ' + '长度:' + len;
+            return;
+        }
+
+        len = label.value.length;
+        if (len < 2 || len > 20)
+        {
+            info.innerText  = '无效昵称:'+ label.value + ' 长度:' + len;
+            return;
+        }
+
+
+        var formData = new FormData();
+        formData.append('user', user.value);
+        formData.append('pwd', pwd.value);
+        formData.append('label', label.value);
+        var csrftoken = $("input[name$='csrfmiddlewaretoken']").val();
+
+        $.ajax({
+
+                type: "POST",
+                dataType: "json",
+                url: "/register" ,
+                processData : false,
+                data:  formData,
+                contentType:false,
+                headers:{'X-CSRFToken':csrftoken },
+                success: function (result) {
+                    console.log(result);
+                    var info = document.getElementById('info');
+                    user = result['user'];
+                    rc = result['result'];
+                    if (rc == 9)
+                        login_result = '用户已经存在';
+                    else if (rc == 10)
+                    {
+                        info.style.color="green";
+                        login_result ='注册成功';
+                    }
+                    else
+                        login_result = '注册失败';
+                    info.innerText  = '用户:'+ user + ',' + login_result;
+                },
+                error : function( XMLHttpRequest, textStatus, errorThrown) {},
+            });
+
+    }
+
+    function click_login(){
+        var user = document.getElementById('user');
+        var pwd = document.getElementById('pwd');
+        var info = document.getElementById('info');
+        var formData = new FormData();
+        formData.append('user', user.value);
+        formData.append('pwd', pwd.value);
+        var csrftoken = $("input[name$='csrfmiddlewaretoken']").val();
+        info.style.color="red";
+        $.ajax({
+
+                type: "POST",
+                dataType: "json",
+                url: "/login" ,
+                processData : false,
+                data:  formData,
+                contentType:false,
+                headers:{'X-CSRFToken':csrftoken },
+                success: function (result) {
+                    console.log(result);
+                    user = result['user'];
+                    rc = result['result'];
+                    if (rc == 1)
+                    {
+                        info.style.color="green";
+                        login_result = '登录成功';
+                    }
+                    else if (rc == 3)
+                        login_result = '登录失败,没有此用户';
+                    else
+                        login_result = '登录失败';
+                    info.innerText  = '用户:'+ user + ',' + login_result;
+                },
+                error : function( XMLHttpRequest, textStatus, errorThrown) {},
+            });
+       }
+       <!--init -->
+       var item = document.getElementById('register');
+       item.style.visibility="hidden";
+       var item = document.getElementById('label_div');
+       item.style.visibility="hidden";
+
+</script>
 </body>
 </html>
+
+
