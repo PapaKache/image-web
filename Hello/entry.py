@@ -41,14 +41,14 @@ def upload(request):
         print("upload post")
         tselect= request.POST.get('type_select')
         print(tselect)
-        
-
+        user = request.POST['user']
         content =request.FILES.get("upload", None)
         if not content:
             print('not upload value')
             return HttpResponse("没有上传内容")
         print('name:%s'%content.name)
-        position = os.path.join('/home/djiango/static/images/'+tselect + '/',content.name)
+
+        position = os.path.join('/home/djiango/static/images',user,tselect,content.name)
         print(position)
 
         storage = open(position,'wb+')       #打开存储文件
@@ -111,12 +111,15 @@ def update_image(request, user = True):
     if user == True: 
         tselect = request.POST['type_select']
         page_num = request.POST['page_no']
+        user = request.POST['user']
         print('pageno:' + page_num)
+        print('user:' + user)
         page_index = int(page_num) - 1 #start from zero
     else:
         tselect = 'animal'
     #print(a)
-    idir = '/home/djiango/static/images/' + tselect
+    idir = os.path.join('/home/djiango/static/images',user,tselect)
+    #idir = '/home/djiango/static/images/' + tselect
     print(idir)
     fs = get_files(idir)
     size = len(fs)
@@ -141,8 +144,9 @@ def update_image(request, user = True):
     dt = {}
     imgid = 1
     for i in range(start_index,end_index + 1, 1):
-        key = 'img%d'% (imgid)      
-        src= "/static/images/%s/%s"%(tselect,fs[i])
+        key = 'img%d'% (imgid)    
+        src = os.path.join("/static/images/",user,tselect,fs[i])
+        #src= "/static/images/%s/%s"%(tselect,fs[i])
         dt[key] = src
         imgid += 1
         
@@ -179,7 +183,7 @@ def get_files(file_dir):
             t = os.path.getmtime(fn)
             item = [f,t]
             vs.append(item)
-            print(fn) 
+            #print(fn) 
     if fnum <= 0:
         return []
         

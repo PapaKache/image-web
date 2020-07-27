@@ -126,12 +126,13 @@
         if (ulabel == 'guest')
         {
             alert('非注册会员，不允许上传文件');
-            return;
+            //return;
         }
         var form=document.getElementById("form_upload");
         var formData=new FormData(form);
         var type = document.getElementById("type_select")
         formData.append('type_select', type.value)
+        formData.append('user', ulabel)
  
         var csrftoken = $("input[name$='csrfmiddlewaretoken']").val();
       
@@ -204,12 +205,13 @@
             item.style.visibility="visible";
         }
     
+        var ulabel = get_ulabel();
         var formData = new FormData();
         var type = document.getElementById("type_select");
         var page_no = document.getElementById("page_no");
         formData.append('type_select', type.value);
         formData.append('page_no', page_no.value);
-
+        formData.append('user', ulabel);
         var csrftoken = $("input[name$='csrfmiddlewaretoken']").val();
       
         $.ajax({
@@ -282,11 +284,17 @@
                 error : function( XMLHttpRequest, textStatus, errorThrown) {},
             });
        }
-	   
+       
+	   function jump(){
+            window.location.href='entry';
+        }
+        
        function click_exit(){
             delCookie('user');
             delCookie('pwd');
             delCookie('label');
+            alert('当前账户退出');
+            jump();
        }
        
        function delCookie(name){
