@@ -99,6 +99,7 @@ def register(request):
             u = user_info.createUserInfo(user,pwd,label)
             user_info.saveUserInfo(u)
             rc = user_info.USER_REGISTER_SUCC
+            print('create base dir')
             create_base_link(user)
         print(user)
         print(rc) 
@@ -198,12 +199,29 @@ def get_files(file_dir):
         
     return rs
 def create_base_link(user):
+    src_dir=['','','','']
     dst_dir=['','','','']
+    dst_dir[0] = '/home/djiango/static/images/%s'%user
+    os.system('mkdir ' + dst_dir[0])
+
+    src_dir[0] = '/home/djiango/static/images/%s/animal'%'guest'
+    src_dir[1] = '/home/djiango/static/images/%s/plant'%'guest'
+    src_dir[2] = '/home/djiango/static/images/%s/color'%'guest'
+    src_dir[3] = '/home/djiango/static/images/%s/people'%'guest'
+
     dst_dir[0] = '/home/djiango/static/images/%s/animal'%user
     dst_dir[1] = '/home/djiango/static/images/%s/plant'%user
     dst_dir[2] = '/home/djiango/static/images/%s/color'%user
     dst_dir[3] = '/home/djiango/static/images/%s/people'%user
-    for i in dst_dir:
-        os.system('mkdir ' + i)
+    for i in range(len(dst_dir)):
+        os.system('mkdir ' + dst_dir[i])
+        print('mkdir %s'%dst_dir[i])
+        fs = get_files(src_dir[i])
+        
+        for name in fs:
+            src = os.path.join(src_dir[i],name)
+            dst = os.path.join(dst_dir[i],name)
+            print('ln -s %s %s'%(src,dst))
+            os.system('ln -s %s %s'%(src,dst)) 
 #fs = get_files(".")
 #print(fs)
