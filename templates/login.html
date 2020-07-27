@@ -100,7 +100,8 @@
                     else if (rc == 10)
                     {
                         info.style.color="green";
-                        login_result ='注册成功';
+                        login_result ='注册成功,准备跳转到主页';
+                        setTimeout(jump,3000);
                     }
                     else
                         login_result = '注册失败';
@@ -131,27 +132,61 @@
                 headers:{'X-CSRFToken':csrftoken },
                 success: function (result) {
                     console.log(result);
-                    user = result['user'];
+                    get_user = result['user'];
                     rc = result['result'];
                     if (rc == 1)
                     {
                         info.style.color="green";
-                        login_result = '登录成功';
+                        login_result = '登录成功,准备跳转到主页';
+						setCookie('user',user.value,30); 
+						setCookie('pwd',pwd.value,30);
+                        
+                        setTimeout(jump,3000);
+                        window.location.href="entry";
                     }
                     else if (rc == 3)
                         login_result = '登录失败,没有此用户';
                     else
                         login_result = '登录失败';
-                    info.innerText  = '用户:'+ user + ',' + login_result;
+                    info.innerText  = '用户:'+ get_user + ',' + login_result;
                 },
                 error : function( XMLHttpRequest, textStatus, errorThrown) {},
             });
        }
+	   
+	    function setCookie(name,value,day){
+			var date = new Date();
+			date.setDate(date.getDate() + day);
+			document.cookie = name + '=' + value + ';expires='+ date;
+		};
+
+		//获取cookie
+		function getCookie(name){
+			var reg = RegExp(name+'=([^;]+)');
+			var arr = document.cookie.match(reg);
+			if(arr){
+			return arr[1];
+			}else{
+			return '';
+			}
+		};
+        
+        
+        function jump(){
+            window.location.href='entry';
+        }
        <!--init -->
+	   var user = document.getElementById('user');
+       var pwd = document.getElementById('pwd');
+		
        var item = document.getElementById('register');
        item.style.visibility="hidden";
        var item = document.getElementById('label_div');
        item.style.visibility="hidden";
+	   var cuser = getCookie('user');
+	   var cpwd = getCookie('pwd');
+	   user.value = cuser;
+	   pwd.value = cpwd;
 
 </script>
 </body>

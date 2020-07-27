@@ -10,10 +10,13 @@
 <!--<body style="background-image:url(/static/images/bg.jpg);background-size:100%;">-->
 <body style="background:#FAF0F0;background-size:100%;">
 		<div style="height:128px;background:#FDF5F5" >
-			<img align="left" src= "/static/images/logo.png" />
-			<a align="right" href="login"> 登录/注册</a>		
+			<!--<img align="left" src= "/static/images/logo.gif" />-->
+            <div style="display:flex;justify-content: flex-end;">        
+			    <p id="user_label"> 用户名称</p>		
+			    <p ><a  href="login">&nbsp;&nbsp;&nbsp; 登录/注册&nbsp;&nbsp;&nbsp;</a></p>		
+			    <p align="right"><a  onclick="click_exit()"> 退出</a></p>		
+            </div>
 		</div>	
-		<hr color="#009988"/>
 		<hr color="#009988" width= "100%"/>
                 <form enctype="multipart/form-data" action="/upload" id = "form_upload"  method="POST" onsubmit="return false"> 
                 <div style="display: flex;">
@@ -119,16 +122,17 @@
 	}
 	
     function on_click_upload() {
+        var ulabel = get_ulabel();
+        if (ulabel == 'guest')
+        {
+            alert('非注册会员，不允许上传文件');
+            return;
+        }
         var form=document.getElementById("form_upload");
         var formData=new FormData(form);
         var type = document.getElementById("type_select")
         formData.append('type_select', type.value)
-        /*
-        var type_select=document.getElementById("type_select");
-        var tvalue = type_select.value;
-        var upload=document.getElementById('upload');
-        var uvalue = upload.value;
-        */
+ 
         var csrftoken = $("input[name$='csrfmiddlewaretoken']").val();
       
         $.ajax({
@@ -163,6 +167,12 @@
                         item.style.visibility="visible";
                     }
             }
+            var page_no = document.getElementById("page_no");
+            value = page_no.value;
+            if (page_no.value * 1 != data['page_no'] * 1)
+            {
+                page_no.value = data['page_no'] * 1
+            }
     }
 
     function on_click_update_image_next() {
@@ -186,6 +196,14 @@
 
 
     function on_click_update_image() {
+    
+        var keys=["img1","img2","img3","img4","img5","img6","img7","img8","img9","img10"]
+        for(var i = 0;i< keys.length;i++){
+            key = keys[i];
+            var item = document.getElementById(key);
+            item.style.visibility="visible";
+        }
+    
         var formData = new FormData();
         var type = document.getElementById("type_select");
         var page_no = document.getElementById("page_no");
@@ -224,7 +242,74 @@
                 },
             });
     }
+	
+    function get_ulabel() {
+        var ulabel = document.getElementById("user_label");
+        return ulabel.innerText;
+    }
+	function login(){
+        var ulabel = document.getElementById("user_label");
+        var user = getCookie('user');//document.getElementById('user');
+        var pwd = getCookie('pwd');//document.getElementById('pwd');
+        var formData = new FormData();
+        formData.append('user', user);
+        formData.append('pwd', pwd);
+        var csrftoken = $("input[name$='csrfmiddlewaretoken']").val();
+        ulabel.innerText = 'guest';
+        $.ajax({
+
+                type: "POST",
+                dataType: "json",
+                url: "/login" ,
+                processData : false,
+                data:  formData,
+                contentType:false,
+                headers:{'X-CSRFToken':csrftoken },
+                success: function (result) {
+                    console.log(result);
+                    get_user = result['user'];
+                    rc = result['result'];
+                    if (rc == 1)
+                    {
+                        login_result = '登录成功';
+                        ulabel.innerText = get_user;
+                    }
+                    else if (rc == 3)
+                        login_result = '登录失败,没有此用户';
+                    else
+                        login_result = '登录失败';                 
+                },
+                error : function( XMLHttpRequest, textStatus, errorThrown) {},
+            });
+       }
+	   
+       function click_exit(){
+            delCookie('user');
+            delCookie('pwd');
+            delCookie('label');
+       }
+       
+       function delCookie(name){
+            setCookie(name,null,-1);
+        };
+	    function setCookie(name,value,day){
+			var date = new Date();
+			date.setDate(date.getDate() + day);
+			document.cookie = name + '=' + value + ';expires='+ date;
+		};
+
+		//获取cookie
+		function getCookie(name){
+			var reg = RegExp(name+'=([^;]+)');
+			var arr = document.cookie.match(reg);
+			if(arr){
+			return arr[1];
+			}else{
+			return '';
+			}
+		};
     <!-- init-->
+    login();
     on_click_update_image();
 
 </script>

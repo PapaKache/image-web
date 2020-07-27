@@ -104,6 +104,7 @@ def register(request):
         print(rc) 
         ht = {'user':user,'result':rc}
     return response(ht)
+    
 def update_image(request, user = True):
     print('update image')
     print(request)
@@ -111,7 +112,7 @@ def update_image(request, user = True):
         tselect = request.POST['type_select']
         page_num = request.POST['page_no']
         print('pageno:' + page_num)
-        page_num = int(page_num)
+        page_index = int(page_num) - 1 #start from zero
     else:
         tselect = 'animal'
     #print(a)
@@ -119,15 +120,20 @@ def update_image(request, user = True):
     print(idir)
     fs = get_files(idir)
     size = len(fs)
+    page_no_max = int(size/10)
+    if page_index > page_no_max:
+        page_index = page_no_max
+    
+    
     if size <= 0:
         print('update image fail,get file:%d'%size)
         return render(request, "index.html", {})
         
-    if size <= 10:
+    if page_no_max == 0:
         start_index = 0
         end_index = (size -1)- start_index
     else:
-        start_index = (page_num - 1) * 10
+        start_index = (page_index) * 10
         end_index = (size - 1)
         if end_index - start_index > 9:
             end_index = start_index + 9
@@ -139,19 +145,13 @@ def update_image(request, user = True):
         src= "/static/images/%s/%s"%(tselect,fs[i])
         dt[key] = src
         imgid += 1
+        
+    dt['page_no'] = (page_index + 1)
     print(dt)
     #return HttpResponse(json.dumps(dt), content_type='application/json')
     #return render(request, "index.html", dt)
     return response(dt)
-    '''
-    ht = {}
-    for i in range(size):
-        key = 'img%d'% i      
-        line = "<img id = 'img%d' src= '/static/images/%s/%s'  class='contain'/>"%(i,tselect,fs[i])
-        ht[key] = line
-    #print(ht)
-    return render(request, "index.html", ht)
-    '''
+
 
 def sort(vs):
     NAME = 0
@@ -172,13 +172,14 @@ def get_files(file_dir):
     vs = []
     fnum = 0
     for f in filelist:
-        if os.path.isdir(f)== False:
+        fn = file_dir + "/" + f
+        if os.path.isdir(fn)== False:
             fnum += 1
             fn = file_dir + "/" + f
             t = os.path.getmtime(fn)
             item = [f,t]
             vs.append(item)
-    
+            print(fn) 
     if fnum <= 0:
         return []
         
