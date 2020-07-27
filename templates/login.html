@@ -48,6 +48,14 @@
 
     }
 
+    function check_special(value) {
+           var a = value.indexOf('\\');
+           var b = value.indexOf('/');
+           if (a >= 0 || b >= 0)
+                return true;
+
+          return false; 
+    }
     function click_register() {
         var user = document.getElementById('user');
         var pwd = document.getElementById('pwd');
@@ -60,13 +68,23 @@
             info.innerText  = '无效用户:'+ user.value + ' 长度:' + len;
             return;
         }
+        if (check_special(user.value) == true)
+        {
+             info.innerText  = '无效用户:'+ user.value + '不能包含包含\\或者/';
+             return;
+        }
+
         len = pwd.value.length;
         if (len < 3 || len > 12)
         {
             info.innerText  = '无效密码  ' + '长度:' + len;
             return;
         }
-
+        if (check_special(pwd.value) == true)
+        {
+             info.innerText  = '无效密码:'+ user.value + '不能包含包含\\或者/';
+             return;
+        }
         len = label.value.length;
         if (len < 2 || len > 20)
         {
@@ -93,7 +111,7 @@
                 success: function (result) {
                     console.log(result);
                     var info = document.getElementById('info');
-                    user = result['user'];
+                    get_user = result['user'];
                     rc = result['result'];
                     if (rc == 9)
                         login_result = '用户已经存在';
@@ -101,11 +119,14 @@
                     {
                         info.style.color="green";
                         login_result ='注册成功,准备跳转到主页';
+                        setCookie('user',user.value,30); 
+						setCookie('pwd',pwd.value,30);
+
                         setTimeout(jump,3000);
                     }
                     else
                         login_result = '注册失败';
-                    info.innerText  = '用户:'+ user + ',' + login_result;
+                    info.innerText  = '用户:'+ get_user + ',' + login_result;
                 },
                 error : function( XMLHttpRequest, textStatus, errorThrown) {},
             });

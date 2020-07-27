@@ -99,7 +99,7 @@ def register(request):
             u = user_info.createUserInfo(user,pwd,label)
             user_info.saveUserInfo(u)
             rc = user_info.USER_REGISTER_SUCC
-
+            create_base_link(user)
         print(user)
         print(rc) 
         ht = {'user':user,'result':rc}
@@ -171,7 +171,10 @@ def sort(vs):
         vs[max_index] = vstart
     return vs    
 
-def get_files(file_dir):   
+def get_files(file_dir):  
+    if os.path.exists(file_dir) == False:
+        return []
+
     filelist =  os.listdir(file_dir)  #
     vs = []
     fnum = 0
@@ -194,6 +197,13 @@ def get_files(file_dir):
         #print(rs[i])
         
     return rs
-    
+def create_base_link(user):
+    dst_dir=['','','','']
+    dst_dir[0] = '/home/djiango/static/images/%s/animal'%user
+    dst_dir[1] = '/home/djiango/static/images/%s/plant'%user
+    dst_dir[2] = '/home/djiango/static/images/%s/color'%user
+    dst_dir[3] = '/home/djiango/static/images/%s/people'%user
+    for i in dst_dir:
+        os.system('mkdir ' + i)
 #fs = get_files(".")
 #print(fs)

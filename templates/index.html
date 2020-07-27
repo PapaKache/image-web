@@ -177,6 +177,10 @@
     }
 
     function on_click_update_image_next() {
+        if (g_update_finish == false)
+        {
+            return;
+        }
         var page_no = document.getElementById("page_no");
         value = page_no.value;
         value = value *1 + 1;
@@ -185,6 +189,10 @@
     }
 
     function on_click_update_image_pre() {
+        if (g_update_finish == false)
+        {
+            return;
+        }
         var page_no = document.getElementById("page_no");
         value = page_no.value;
         if (value > 1)
@@ -198,6 +206,7 @@
 
     function on_click_update_image() {
     
+        g_update_finish = false;
         var keys=["img1","img2","img3","img4","img5","img6","img7","img8","img9","img10"]
         for(var i = 0;i< keys.length;i++){
             key = keys[i];
@@ -205,13 +214,12 @@
             item.style.visibility="visible";
         }
     
-        var ulabel = get_ulabel();
         var formData = new FormData();
         var type = document.getElementById("type_select");
         var page_no = document.getElementById("page_no");
         formData.append('type_select', type.value);
         formData.append('page_no', page_no.value);
-        formData.append('user', ulabel);
+        formData.append('user', g_user);
         var csrftoken = $("input[name$='csrfmiddlewaretoken']").val();
       
         $.ajax({
@@ -234,10 +242,12 @@
                        //console.log(value)
                      }
                      __update_image(data);
+                     g_update_finish = true;
                     //console.log(result);
                 },
                 error : function( XMLHttpRequest, textStatus, errorThrown) {
                     //var s = {{ img0|safe }};
+                     g_update_finish = true;
                     alert('err');
                                 console.log(textStatus); 
 
@@ -275,6 +285,7 @@
                     {
                         login_result = '登录成功';
                         ulabel.innerText = get_user;
+                        g_user = get_user;
                     }
                     else if (rc == 3)
                         login_result = '登录失败,没有此用户';
@@ -293,8 +304,8 @@
             delCookie('user');
             delCookie('pwd');
             delCookie('label');
-            alert('当前账户退出');
             jump();
+            alert('当前账户退出');
        }
        
        function delCookie(name){
@@ -317,8 +328,10 @@
 			}
 		};
     <!-- init-->
+    var g_user = 'guest';
+    var g_update_finish = true; 
     login();
-    on_click_update_image();
+    setTimeout(on_click_update_image,1000);
 
 </script>
 </body>
