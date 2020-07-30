@@ -13,6 +13,8 @@ urlpatterns = [
     #url(r'^search-post$', search.search_post),
     #url(r'^update_next$', entry.update_next),
     #url(r'^update_pre$', entry.update_pre),
+    url(r'^type_get$', entry.type_get),
+    url(r'^type_add$', entry.type_add),
     url(r'^login$', entry.login),
     url(r'^register$', entry.register),
     url(r'^upload$', entry.upload),

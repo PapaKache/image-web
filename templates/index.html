@@ -22,10 +22,6 @@
                 <div style="display: flex;">
                     {% csrf_token %}
                     <select  name= 'type_select' id = "type_select"  class="margin" >        
-                        <option value="animal">动物</option>
-                        <option value="plant">植物</option>
-                        <option value="people">人物</option>
-                        <option value="color">颜色</option>
                     </select>
                     
 					<input type="file" name="upload" id = "upload" class="inputBlock"/>
@@ -39,8 +35,8 @@
  			<hr  color="#009988"/>
 		</div>
 		<div>
-			<input />
-				<button >增加类别</button>
+			<input id = "type_add"/>
+				<button onclick = 'click_type_add()' >增加类别</button>
 		</div>
 		
         <table  border="1px" width="96%">
@@ -121,6 +117,45 @@
 		
 	}
 	
+    function click_type_add() {
+        if (g_user == 'guest')
+        {
+            alert('非注册会员，不允许xx');
+            return;
+        }
+        var formData=new FormData();
+        var type = document.getElementById("type_add")
+        formData.append('type_add', type.value)
+        formData.append('user', g_user)
+ 
+        var csrftoken = $("input[name$='csrfmiddlewaretoken']").val();
+      
+        $.ajax({
+
+                type: "POST",
+                dataType: "json",//预期服务器返回的数据类型
+                url: "/type_add" ,
+                processData : false,
+                data:  formData,
+                contentType:false,
+                headers:{'X-CSRFToken':csrftoken },
+                success: function (result) {
+                    rc = result['result'] * 1
+                    console.log('type add result:' + rc)
+                    if (rc == 0)
+                        alert('add succ');
+                    else if (rc == 1)
+                        alert('type is exists');
+                    else if (rc == 2)
+                        alert('type is out of boundary');
+                    else
+                        alert('create_fail');
+                },
+                error : function( XMLHttpRequest, textStatus, errorThrown) {alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);},
+            });
+       }
+
+
     function on_click_upload() {
         var ulabel = get_ulabel();
         if (ulabel == 'guest')
@@ -327,11 +362,47 @@
 			return '';
 			}
 		};
+       
+        function set_select_type(data){
+            var keys = ["dir1","dir2","dir3","dir4","dir5","dir6","dir7","dir8","dir9","dir10"] 
+            var select = document.getElementById("type_select"); 
+            for(var i = 0;i< keys.length;i++){
+                key = keys[i]
+                value = data[key];
+                if (typeof(value) != "undefined"){
+                        select.add(new Option(value,value),i);
+                        
+                }
+
+            }
+        }
+        function type_get(){
+            var formData = new FormData();
+            formData.append('user', g_user);
+            var csrftoken = $("input[name$='csrfmiddlewaretoken']").val();
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "/type_get" ,
+                processData : false,
+                data:  formData,
+                contentType:false,
+                headers:{'X-CSRFToken':csrftoken },
+                success: function (result) {
+                    console.log(result);
+                    set_select_type(result);
+                    
+                },
+                error : function( XMLHttpRequest, textStatus, errorThrown) {},
+            });
+       }
+ 
     <!-- init-->
     var g_user = 'guest';
     var g_update_finish = true; 
     login();
-    setTimeout(on_click_update_image,1000);
+    setTimeout(type_get,1000);
+    setTimeout(on_click_update_image,2000);
 
 </script>
 </body>

@@ -82,6 +82,60 @@ def login(request):
         ht = {'user':user,'result':rc}
     return response(ht)
 
+def type_get(request):
+    SUCC = 0
+    EXISTS = 1
+    OUT_LIMIT = 2
+    FAIL = 3
+    rc = FAIL
+    ht = {}
+    print('type get')
+    if request.method == 'POST':
+        print(request)
+        user = request.POST['user']
+        (r,u) = user_info.getUserInfo(user)
+        if r == True:
+            dirname = os.path.join('/home/djiango/static/images',user)
+            if os.path.exists(dirname) == False:
+                rc = FAIL
+                print('path no exists')
+            else:
+                ds = get_dirs(dirname)
+                for i in range(len(ds)):
+                    key = 'dir%d'%(i+1)
+                    value = ds[i]
+                    ht[key] = value
+                    rc = SUCC
+    ht['result'] = rc
+    ht['user'] = user
+    print(ht)
+    return response(ht)
+ 
+def type_add(request):
+    SUCC = 0
+    EXISTS = 1
+    OUT_LIMIT = 2
+    FAIL = 3
+    ht = {}
+    print('type add')
+    rc = FAIL
+    if request.method == 'POST':
+        print(request)
+        user = request.POST['user']
+        cate = request.POST['type_add']
+        (r,u) = user_info.getUserInfo(user)
+        if r == True:
+            dirname = os.path.join('/home/djiango/static/images',user,cate)
+            if os.path.exists(dirname):
+                rc = EXISTS
+                print('path exists')
+            else:
+                os.system('mkdir ' + dirname)
+                print('mkdir ' + dirname)
+                rc = SUCC
+        ht = {'user':user,'result':rc}
+    return response(ht)
+ 
 def register(request):
     print('register')
     if request.method == 'GET':
@@ -171,6 +225,32 @@ def sort(vs):
         vs[start] = vmax
         vs[max_index] = vstart
     return vs    
+
+def get_dirs(file_dir):  
+    if os.path.exists(file_dir) == False:
+        return []
+
+    filelist =  os.listdir(file_dir)  #
+    vs = []
+    fnum = 0
+    for f in filelist:
+        fn = file_dir + "/" + f
+        if os.path.isdir(fn)== True:
+            fnum += 1
+            t = os.path.getmtime(fn)
+            item = [f,t]
+            vs.append(item)
+            #print(fn) 
+    if fnum <= 0:
+        return []
+        
+    ns = sort(vs) 
+    rs = [0] * len(vs)
+    for i in range(len(ns)):
+        rs[i] = ns[i][0]
+        #print(rs[i])
+        
+    return rs
 
 def get_files(file_dir):  
     if os.path.exists(file_dir) == False:
