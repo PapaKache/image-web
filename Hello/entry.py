@@ -111,6 +111,27 @@ def type_get(request):
     print(ht)
     return response(ht)
  
+def type_delete(request):
+    SUCC = 0
+    EXISTS = 1
+    OUT_LIMIT = 2
+    FAIL = 3
+    ht = {}
+    print('type delete')
+    rc = FAIL
+    if request.method == 'POST':
+        print(request)
+        user = request.POST['user']
+        tselect = request.POST['type_select']
+        (r,u) = user_info.getUserInfo(user)
+        if r == True:
+            dirname = os.path.join('/home/djiango/static/images',user,tselect)
+            if os.path.exists(dirname):
+                rc = SUCC
+                os.system('rm -rvf ' + dirname)
+        ht = {'user':user,'result':rc}
+    return response(ht)
+ 
 def type_add(request):
     SUCC = 0
     EXISTS = 1

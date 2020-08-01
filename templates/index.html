@@ -30,6 +30,7 @@
 					<button class="sureUpload" name="update_image" onclick="on_click_update_image() "> 刷新图片</button>
 
                     </div>
+					<button class="sureUpload" name="delete_type" onclick="on_click_type_delete() "> 删除类别</button>
                 </form>
 		<div>
  			<hr  color="#009988"/>
@@ -238,6 +239,35 @@
         on_click_update_image();
     }
 
+    function on_click_type_delete() {
+    
+        var formData = new FormData();
+        var type = document.getElementById("type_select");
+        formData.append('type_select', type.value);
+        formData.append('user', g_user);
+        var csrftoken = $("input[name$='csrfmiddlewaretoken']").val();
+      
+        $.ajax({
+
+                type: "POST",
+                dataType: "json",//预期服务器返回的数据类型
+                url: "/type_delete" ,
+                processData : false,
+                data:  formData,
+                contentType:false,
+                headers:{'X-CSRFToken':csrftoken },
+                success: function (data) {
+                    alert('删除类别:' + type.value + ' 成功');
+                },
+                error : function( XMLHttpRequest, textStatus, errorThrown) {
+                    //var s = {{ img0|safe }};
+                     g_update_finish = true;
+                    alert('err');
+                                console.log(textStatus); 
+
+                },
+            });
+    }
 
     function on_click_update_image() {
     
